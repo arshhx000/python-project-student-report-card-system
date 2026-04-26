@@ -4,6 +4,15 @@ from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_key_for_flash_messages'
+database.init_db()
+
+
+def row_to_dict(row):
+    return dict(row) if row else None
+
+
+def rows_to_dicts(rows):
+    return [dict(row) for row in rows]
 
 # Login required decorator
 def login_required(f):
@@ -69,12 +78,11 @@ def logout():
 @login_required
 @teacher_required
 def index():
-    students = database.get_all_students()
+    students = rows_to_dicts(database.get_all_students())
     classes = set([s['class_name'] for s in students])
     
     # Calculate averages for each student
     for student in students:
-        grades = database.get_grades_for_student(student['id'])
         student['average'] = database.get_student_average(student['id'])
     
     student_count = len(students)
@@ -120,15 +128,15 @@ def manage_marks():
     selected_class = request.form.get('class') or request.args.get('class', '')
     
     if selected_class:
-        students = database.get_students_by_class(selected_class)
+        students = rows_to_dicts(database.get_students_by_class(selected_class))
     else:
-        students = database.get_all_students()
+        students = rows_to_dicts(database.get_all_students())
     
     classes = sorted(set([s['class_name'] for s in students]))
     
     selected_student = None
     if selected_student_id:
-        selected_student = database.get_student_by_id(selected_student_id)
+        selected_student = row_to_dict(database.get_student_by_id(selected_student_id))
         if selected_student:
             selected_student['grades'] = database.get_grades_for_student(selected_student_id)
     
@@ -166,7 +174,7 @@ def search_student_page():
     results = []
     
     if query:
-        results = database.search_student(query)
+        results = rows_to_dicts(database.search_student(query))
         for student in results:
             student['average'] = database.get_student_average(student['id'])
             grades = database.get_grades_for_student(student['id'])
@@ -207,12 +215,12 @@ def class_topper():
 @login_required
 @teacher_required
 def fail_list():
-    students = database.get_all_students()
+    students = rows_to_dicts(database.get_all_students())
     classes = set([s['class_name'] for s in students])
     
     all_fail_records = []
     for cls in classes:
-        fail_records = database.get_fail_list(cls)
+        fail_records = rows_to_dicts(database.get_fail_list(cls))
         all_fail_records.extend(fail_records)
     
     # Add student id to fail records for linking
@@ -229,9 +237,9 @@ def attendance_page():
     selected_class = request.form.get('class') or request.args.get('class', '')
     
     if selected_class:
-        students = database.get_students_by_class(selected_class)
+        students = rows_to_dicts(database.get_students_by_class(selected_class))
     else:
-        students = database.get_all_students()
+        students = rows_to_dicts(database.get_all_students())
     
     classes = sorted(set([s['class_name'] for s in students]))
     
@@ -240,7 +248,7 @@ def attendance_page():
     student_attendance_percent = 0
     
     if selected_student_id:
-        selected_student = database.get_student_by_id(selected_student_id)
+        selected_student = row_to_dict(database.get_student_by_id(selected_student_id))
         if selected_student:
             student_attendance = database.get_attendance(selected_student_id)
             student_attendance_percent = database.get_attendance_percentage(selected_student_id)

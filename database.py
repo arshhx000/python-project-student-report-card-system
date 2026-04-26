@@ -38,6 +38,20 @@ def init_db():
             FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL
         )
     ''')
+
+    # Backward-compatible migration for existing databases created
+    # before roll_no/section/user_id fields were added.
+    cursor.execute("PRAGMA table_info(students)")
+    student_columns = {row["name"] for row in cursor.fetchall()}
+    if 'roll_no' not in student_columns:
+        cursor.execute('ALTER TABLE students ADD COLUMN roll_no TEXT')
+        cursor.execute("UPDATE students SET roll_no = printf('%03d', id) WHERE roll_no IS NULL OR roll_no = ''")
+        cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_students_roll_no ON students(roll_no)')
+    if 'section' not in student_columns:
+        cursor.execute("ALTER TABLE students ADD COLUMN section TEXT DEFAULT 'A'")
+        cursor.execute("UPDATE students SET section = 'A' WHERE section IS NULL OR section = ''")
+    if 'user_id' not in student_columns:
+        cursor.execute('ALTER TABLE students ADD COLUMN user_id INTEGER')
     
     # Create grades table
     cursor.execute('''
