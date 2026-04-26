@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="margin: 0;">📅 Attendance Management</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Back to Dashboard</a>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Select Student -->
+    <div class="card">
+        <h3 style="margin-top: 0;">Select Student</h3>
+        <form method="POST" action="{{ url_for('attendance_page') }}">
+            <div class="form-group">
+                <label for="class">Filter by Class</label>
+                <select id="class" name="class" class="form-control" onchange="this.form.submit()">
+                    <option value="">All Classes</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls }}" {% if selected_class == cls %}selected{% endif %}>{{ cls }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <div style="max-height: 500px; overflow-y: auto;">
+            {% for student in students %}
+            <div style="background: {% if selected_student_id == student.id %}var(--primary){% else %}var(--bg){% endif %}; color: {% if selected_student_id == student.id %}white{% else %}var(--text-main){% endif %}; padding: 0.75rem; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer;" onclick="selectStudent({{ student.id }})">
+                <strong>{{ student.name }}</strong><br>
+                <small style="opacity: 0.8;">{{ student.roll_no }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Attendance Management -->
+    {% if selected_student %}
+    <div class="card">
+        <h3 style="margin-top: 0;">{{ selected_student.name }} - Attendance</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Roll No: {{ selected_student.roll_no }}</p>
+
+        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 2rem;">
+            <p style="margin: 0 0 0.5rem 0; opacity: 0.9; font-weight: 600;">ATTENDANCE PERCENTAGE</p>
+            <p style="font-size: 2.5rem; font-weight: 700; margin: 0;">{{ student_attendance_percent }}%</p>
+        </div>
+
+        <h4>Mark Attendance</h4>
+        <form method="POST" action="{{ url_for('save_attendance', student_id=selected_student.id) }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="form-control" required>
+                        <option value="">Select Status</option>
+                        <option value="P">Present (P)</option>
+                        <option value="A">Absent (A)</option>
+                        <option value="L">Leave (L)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Mark Attendance</button>
+        </form>
+
+        <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border);">
+
+        <h4>Recent Attendance Records</h4>
+        {% if student_attendance %}
+        <div class="table-responsive">
+            <table style="font-size: 0.95rem;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in student_attendance[:20] %}
+                    <tr>
+                        <td>{{ record.date }}</td>
+                        <td>
+                            <span style="background: {% if record.status == 'P' %}var(--success){% elif record.status == 'A' %}var(--danger){% else %}#f59e0b{% endif %}; color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-weight: 600;">
+                                {{ record.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: 1rem;">No attendance records yet</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="card">
+        <p style="color: var(--text-muted); text-align: center; padding: 3rem;">Select a student to manage attendance</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function selectStudent(studentId) {
+        window.location.href = '{{ url_for("attendance_page") }}?student_id=' + studentId;
+    }
+</script>
+{% endblock %}

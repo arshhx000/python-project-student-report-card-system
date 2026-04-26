@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="margin: 0;">🔍 Search Student</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Back to Dashboard</a>
+</div>
+
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <form method="GET" action="{{ url_for('search_student_page') }}">
+        <div class="form-group">
+            <label for="query">Search by Name or Roll Number</label>
+            <input type="text" id="query" name="query" class="form-control" placeholder="e.g. John or 001" value="{{ query or '' }}" autofocus>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Search</button>
+    </form>
+
+    {% if query %}
+    <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border);">
+
+    {% if results %}
+    <h3>Search Results ({{ results|length }})</h3>
+    <div style="display: grid; gap: 1rem;">
+        {% for student in results %}
+        <div style="background: var(--bg); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <p style="font-size: 1.2rem; font-weight: 700; margin: 0 0 0.5rem 0; color: var(--text-main);">{{ student.name }}</p>
+                    <p style="margin: 0; color: var(--text-muted); font-size: 0.95rem;">
+                        Roll No: <strong>{{ student.roll_no }}</strong> | Class: <strong>{{ student.class_name }}</strong> | Section: <strong>{{ student.section or 'A' }}</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+                <div style="background: white; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                    <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem;">Average</p>
+                    <p style="font-size: 1.5rem; font-weight: 700; margin: 0.25rem 0 0 0; color: var(--primary);">{{ student.average or 'N/A' }}</p>
+                </div>
+                <div style="background: white; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                    <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem;">Grade</p>
+                    <p style="font-size: 1.5rem; font-weight: 700; margin: 0.25rem 0 0 0; color: var(--success);">{{ student.grade or 'N/A' }}</p>
+                </div>
+                <div style="background: white; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                    <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem;">Subjects</p>
+                    <p style="font-size: 1.5rem; font-weight: 700; margin: 0.25rem 0 0 0; color: #8b5cf6;">{{ student.subject_count or 0 }}</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <a href="{{ url_for('manage_grades', student_id=student.id) }}" class="btn btn-sm btn-outline">Edit Marks</a>
+                <a href="{{ url_for('report_card', student_id=student.id) }}" class="btn btn-sm btn-primary">Report Card</a>
+                <a href="{{ url_for('remarks_page', student_id=student.id) }}" class="btn btn-sm" style="background: #8b5cf6; color: white;">Remarks</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>No Results Found</h3>
+        <p>Try searching with a different name or roll number</p>
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

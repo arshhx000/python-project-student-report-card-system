@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="margin: 0;">📝 Manage Marks</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Back to Dashboard</a>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Select Student -->
+    <div class="card">
+        <h3 style="margin-top: 0;">Select Student</h3>
+        <form method="POST" action="{{ url_for('manage_marks') }}">
+            <div class="form-group">
+                <label for="class">Filter by Class</label>
+                <select id="class" name="class" class="form-control" onchange="this.form.submit()">
+                    <option value="">All Classes</option>
+                    {% for cls in classes %}
+                    <option value="{{ cls }}" {% if selected_class == cls %}selected{% endif %}>{{ cls }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <div style="max-height: 500px; overflow-y: auto;">
+            {% for student in students %}
+            <div style="background: {% if selected_student_id == student.id %}var(--primary){% else %}var(--bg){% endif %}; color: {% if selected_student_id == student.id %}white{% else %}var(--text-main){% endif %}; padding: 0.75rem; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer;" onclick="selectStudent({{ student.id }})">
+                <strong>{{ student.name }}</strong><br>
+                <small style="opacity: 0.8;">{{ student.roll_no }} | {{ student.class_name }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Enter Marks -->
+    {% if selected_student %}
+    <div class="card">
+        <h3 style="margin-top: 0;">{{ selected_student.name }} - Enter Marks</h3>
+        <p style="color: var(--text-muted);">Roll No: {{ selected_student.roll_no }} | Class: {{ selected_student.class_name }}</p>
+        
+        <form method="POST" action="{{ url_for('save_marks', student_id=selected_student.id) }}">
+            <div class="form-group">
+                <label for="subject">Subject Name</label>
+                <input type="text" id="subject" name="subject" class="form-control" required placeholder="e.g. Mathematics">
+            </div>
+            
+            <div class="form-group">
+                <label for="marks">Marks (0-100)</label>
+                <input type="number" id="marks" name="marks" class="form-control" required min="0" max="100" placeholder="75">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Save Marks</button>
+        </form>
+
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+
+        <h4>Current Marks</h4>
+        {% if selected_student.grades %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grade in selected_student.grades %}
+                    <tr>
+                        <td>{{ grade.subject }}</td>
+                        <td><strong>{{ grade.marks }}/100</strong></td>
+                        <td>
+                            <form action="{{ url_for('delete_grade', grade_id=grade.id, student_id=selected_student.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Delete this mark?');">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center;">No marks entered yet</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="card">
+        <p style="color: var(--text-muted); text-align: center; padding: 3rem;">Select a student to enter marks</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function selectStudent(studentId) {
+        window.location.href = '{{ url_for("manage_marks") }}?student_id=' + studentId;
+    }
+</script>
+{% endblock %}

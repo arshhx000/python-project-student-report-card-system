@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h2 style="margin: 0;">👨‍🎓 Welcome, {{ student.name }}</h2>
+        <p style="color: var(--text-muted); margin: 0.5rem 0 0 0;">Roll No: <strong>{{ student.roll_no }}</strong> | Class: <strong>{{ student.class_name }}</strong></p>
+    </div>
+    <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="stats-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+        <div style="font-size: 2rem;">📊</div>
+        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Average Score</p>
+        <p style="font-size: 2rem; font-weight: 700; margin: 0;">{{ average }}%</p>
+    </div>
+    
+    <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+        <div style="font-size: 2rem;">⭐</div>
+        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Grade</p>
+        <p style="font-size: 2rem; font-weight: 700; margin: 0;">{{ grade_letter }}</p>
+    </div>
+    
+    <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+        <div style="font-size: 2rem;">🏆</div>
+        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Class Rank</p>
+        <p style="font-size: 2rem; font-weight: 700; margin: 0;">{{ rank }}</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+    <!-- Academics Card -->
+    <div class="card">
+        <h3 style="margin-top: 0;">📚 Academic Performance</h3>
+        {% if grades %}
+        <div class="table-responsive">
+            <table style="font-size: 0.95rem;">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th style="text-align: right;">Marks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grade in grades %}
+                    <tr>
+                        <td>{{ grade.subject }}</td>
+                        <td style="text-align: right; font-weight: 600;">
+                            <span style="background: var(--bg); padding: 0.2rem 0.6rem; border-radius: 8px;">
+                                {{ grade.marks }}/100
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center;">No grades recorded yet</p>
+        {% endif %}
+    </div>
+
+    <!-- Attendance Card -->
+    <div class="card">
+        <h3 style="margin-top: 0;">📅 Attendance</h3>
+        <div style="text-align: center; padding: 1rem;">
+            <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary);">{{ attendance_percentage }}%</div>
+            <p style="color: var(--text-muted); margin: 0.5rem 0 0 0;">Overall Attendance</p>
+            {% if attendance_percentage >= 75 %}
+            <p style="color: var(--success); font-weight: 600; margin: 0.5rem 0 0 0;">✓ Good Attendance</p>
+            {% else %}
+            <p style="color: var(--danger); font-weight: 600; margin: 0.5rem 0 0 0;">⚠ Below Required</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Teacher Remarks Card -->
+    <div class="card">
+        <h3 style="margin-top: 0;">💬 Teacher Remarks</h3>
+        {% if remarks %}
+        <div style="max-height: 300px; overflow-y: auto;">
+            {% for remark in remarks %}
+            <div style="background: var(--bg); padding: 1rem; border-radius: 8px; margin-bottom: 0.75rem;">
+                <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: var(--primary);">{{ remark.teacher_name }}</p>
+                <p style="margin: 0; color: var(--text-main);">{{ remark.remark }}</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: var(--text-muted);">{{ remark.created_at }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center;">No remarks yet</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h3 style="margin-top: 0;">📋 Official Report Card</h3>
+    <p style="color: var(--text-muted);">Download or print your official report card</p>
+    <div style="display: flex; gap: 1rem;">
+        <a href="{{ url_for('report_card', student_id=student.id) }}" class="btn btn-primary">👁️ View Report Card</a>
+        <button onclick="window.print()" class="btn btn-outline">🖨️ Print</button>
+    </div>
+</div>
+{% endblock %}

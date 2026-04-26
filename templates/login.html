@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <div class="card" style="max-width: 450px; width: 100%;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="color: var(--primary); margin: 0 0 0.5rem 0; font-size: 2rem;">EduGrades</h1>
+            <p style="color: var(--text-muted); margin: 0;">Student Report Card System</p>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid var(--border); padding-bottom: 1rem;">
+            <button type="button" class="tab-btn" onclick="switchTab('teacher')" id="teacher-tab" style="flex: 1; padding: 0.75rem; border: none; background: var(--primary); color: white; border-radius: 8px 0 0 0; cursor: pointer; font-weight: 600;">👨‍🏫 Teacher</button>
+            <button type="button" class="tab-btn" onclick="switchTab('student')" id="student-tab" style="flex: 1; padding: 0.75rem; border: none; background: var(--border); color: var(--text-main); border-radius: 0 8px 0 0; cursor: pointer; font-weight: 600;">👨‍🎓 Student</button>
+        </div>
+
+        <!-- Teacher Login Form -->
+        <div id="teacher-form" style="display: block;">
+            <h2 style="margin-top: 0; color: var(--primary);">Teacher Login</h2>
+            <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="role" value="teacher">
+                
+                <div class="form-group">
+                    <label for="teacher-username">Username</label>
+                    <input type="text" id="teacher-username" name="username" class="form-control" required placeholder="Enter username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="teacher-password">Password</label>
+                    <input type="password" id="teacher-password" name="password" class="form-control" required placeholder="Enter password">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem;">Login</button>
+            </form>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+                <strong>Demo:</strong> username: <code>teacher</code>, password: <code>admin123</code>
+            </p>
+        </div>
+
+        <!-- Student Login Form -->
+        <div id="student-form" style="display: none;">
+            <h2 style="margin-top: 0; color: var(--success);">Student Login</h2>
+            <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="role" value="student">
+                
+                <div class="form-group">
+                    <label for="student-rollno">Roll Number</label>
+                    <input type="text" id="student-rollno" name="username" class="form-control" required placeholder="e.g. 001, A001">
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-password">Password</label>
+                    <input type="password" id="student-password" name="password" class="form-control" required placeholder="Enter password">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem; background-color: var(--success);">Login</button>
+            </form>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+                Ask your teacher for your roll number and password
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    code {
+        background: var(--bg);
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        color: var(--primary);
+    }
+</style>
+
+<script>
+    function switchTab(tab) {
+        const teacherForm = document.getElementById('teacher-form');
+        const studentForm = document.getElementById('student-form');
+        const teacherTab = document.getElementById('teacher-tab');
+        const studentTab = document.getElementById('student-tab');
+        
+        if (tab === 'teacher') {
+            teacherForm.style.display = 'block';
+            studentForm.style.display = 'none';
+            teacherTab.style.background = 'var(--primary)';
+            teacherTab.style.color = 'white';
+            studentTab.style.background = 'var(--border)';
+            studentTab.style.color = 'var(--text-main)';
+        } else {
+            teacherForm.style.display = 'none';
+            studentForm.style.display = 'block';
+            teacherTab.style.background = 'var(--border)';
+            teacherTab.style.color = 'var(--text-main)';
+            studentTab.style.background = 'var(--success)';
+            studentTab.style.color = 'white';
+        }
+    }
+</script>
+{% endblock %}

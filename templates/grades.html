@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <a href="{{ url_for('index') }}" style="text-decoration: none; color: var(--text-muted); font-weight: 600;">&larr; Back to Dashboard</a>
+    <a href="{{ url_for('report_card', student_id=student.id) }}" class="btn btn-primary">Generate Report Card</a>
+</div>
+
+<div class="card">
+    <div style="margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
+        <h2 style="margin: 0; color: var(--primary);">{{ student.name }}</h2>
+        <span style="color: var(--text-muted); font-weight: 600;">Class: {{ student.class_name }}</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+        <!-- Add Grade Form -->
+        <div style="background-color: #F9FAFB; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);">
+            <h3 style="margin-top: 0;">Add New Grade</h3>
+            <form method="POST" action="{{ url_for('manage_grades', student_id=student.id) }}">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="subject">Subject Name</label>
+                    <input type="text" id="subject" name="subject" class="form-control" required placeholder="e.g. Mathematics">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="marks">Marks / Score</label>
+                    <input type="number" id="marks" name="marks" class="form-control" required min="0" max="100" placeholder="0 - 100">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Add Subject Grade</button>
+            </form>
+        </div>
+
+        <!-- Grade List -->
+        <div>
+            <h3 style="margin-top: 0;">Current Subjects</h3>
+            {% if grades %}
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Marks</th>
+                            <th style="width: 80px; text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grade in grades %}
+                        <tr>
+                            <td style="font-weight: 600;">{{ grade.subject }}</td>
+                            <td>
+                                <span style="background-color: var(--bg); padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: 700; color: var(--primary);">
+                                    {{ grade.marks }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <form action="{{ url_for('delete_grade', student_id=student.id, grade_id=grade.id) }}" method="POST" onsubmit="return confirm('Remove {{ grade.subject }}?');">
+                                    <button type="submit" class="btn btn-sm btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">&times;</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state" style="padding: 2rem;">
+                <p>No grades recorded yet. Add a subject to begin.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

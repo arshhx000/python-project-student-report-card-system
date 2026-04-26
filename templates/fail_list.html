@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="margin: 0;">⚠️ Fail List</h2>
+    <a href="{{ url_for('index') }}" class="btn btn-outline">&larr; Back to Dashboard</a>
+</div>
+
+<div class="card">
+    <p style="color: var(--text-muted); margin-bottom: 1rem;">Students who scored below 50 marks in any subject</p>
+
+    {% if fail_list %}
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Failed Subject</th>
+                    <th>Marks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in fail_list %}
+                <tr style="background-color: {% if record.marks < 40 %}#fee2e2{% else %}#fef3c7{% endif %};">
+                    <td style="font-weight: 600;">{{ record.roll_no }}</td>
+                    <td>{{ record.name }}</td>
+                    <td>{{ record.class_name }}</td>
+                    <td style="color: var(--danger); font-weight: 600;">{{ record.subject }}</td>
+                    <td>
+                        <span style="background: {% if record.marks < 40 %}var(--danger){% else %}#f59e0b{% endif %}; color: white; padding: 0.3rem 0.6rem; border-radius: 8px;">
+                            {{ record.marks }}/100
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('manage_grades', student_id=record.id) }}" class="btn btn-sm btn-outline">Update Marks</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: var(--bg); border-radius: 8px;">
+        <p style="margin: 0; color: var(--text-muted);">
+            <strong>Total Students in Fail List:</strong> {{ fail_list|length }} records
+        </p>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>✓ No Students in Fail List</h3>
+        <p>All students are performing well!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
