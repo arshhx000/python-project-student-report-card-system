@@ -1,85 +1,140 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
-    <div class="card" style="max-width: 500px; width: 100%;">
-        <div style="text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border);">
-            <h1 style="color: var(--primary); margin: 0 0 0.5rem 0; font-size: 2.5rem;">🎓 EduGrades</h1>
-            <p style="color: var(--text-muted); margin: 0; font-size: 1.1rem;">Student Report Card System</p>
+<div class="login-shell">
+    <div class="card login-card">
+        <div class="login-head">
+            <h2>EduGrades</h2>
+            <p>Student report card management system</p>
         </div>
 
-        <!-- Tab Buttons -->
-        <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem;">
-            <button type="button" class="tab-btn" onclick="switchTab('teacher')" id="teacher-tab" style="flex: 1; padding: 0.75rem 1rem; border: 2px solid var(--primary); background: var(--primary); color: white; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s;">👨‍🏫 Teacher</button>
-            <button type="button" class="tab-btn" onclick="switchTab('student')" id="student-tab" style="flex: 1; padding: 0.75rem 1rem; border: 2px solid var(--border); background: var(--bg); color: var(--text-main); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s;">👨‍🎓 Student</button>
+        <div class="role-tabs">
+            <button type="button" class="tab-btn is-active" onclick="switchTab('teacher')" id="teacher-tab">Teacher</button>
+            <button type="button" class="tab-btn" onclick="switchTab('student')" id="student-tab">Student</button>
         </div>
 
-        <!-- Teacher Login Form -->
-        <div id="teacher-form" style="display: block;">
-            <h3 style="margin: 0 0 1.5rem 0; color: var(--primary); text-align: center;">Teacher Login</h3>
+        <div id="teacher-form">
             <form method="POST" action="{{ url_for('login') }}">
                 <input type="hidden" name="role" value="teacher">
-                
                 <div class="form-group">
-                    <label for="teacher-username" style="font-weight: 600; color: var(--text-main);">Username</label>
-                    <input type="text" id="teacher-username" name="username" class="form-control" required placeholder="Enter your username">
+                    <label for="teacher-username">Username</label>
+                    <input type="text" id="teacher-username" name="username" class="form-control" required placeholder="Enter username">
                 </div>
-                
                 <div class="form-group">
-                    <label for="teacher-password" style="font-weight: 600; color: var(--text-main);">Password</label>
-                    <input type="password" id="teacher-password" name="password" class="form-control" required placeholder="Enter your password">
+                    <label for="teacher-password">Password</label>
+                    <input type="password" id="teacher-password" name="password" class="form-control" required placeholder="Enter password">
                 </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem; font-size: 1rem; font-weight: 700;">Login as Teacher</button>
+                <button type="submit" class="btn btn-primary login-btn">Login as Teacher</button>
             </form>
-            <div style="background: var(--bg); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;">
-                <p style="margin: 0 0 0.5rem 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">📝 Demo Credentials:</p>
-                <p style="margin: 0; color: var(--text-main); font-family: 'Courier New', monospace;">Username: <strong>teacher</strong></p>
-                <p style="margin: 0.25rem 0 0 0; color: var(--text-main); font-family: 'Courier New', monospace;">Password: <strong>admin123</strong></p>
+            <div class="login-note">
+                <p><strong>Demo Credentials</strong></p>
+                <p>Username: <code>teacher</code></p>
+                <p>Password: <code>admin123</code></p>
             </div>
         </div>
 
-        <!-- Student Login Form -->
-        <div id="student-form" style="display: none;">
-            <h3 style="margin: 0 0 1.5rem 0; color: var(--success); text-align: center;">Student Login</h3>
+        <div id="student-form" class="hidden">
             <form method="POST" action="{{ url_for('login') }}">
                 <input type="hidden" name="role" value="student">
-                
                 <div class="form-group">
-                    <label for="student-rollno" style="font-weight: 600; color: var(--text-main);">Roll Number</label>
-                    <input type="text" id="student-rollno" name="username" class="form-control" required placeholder="e.g. 001 or A001">
+                    <label for="student-rollno">Roll Number</label>
+                    <input type="text" id="student-rollno" name="username" class="form-control" required placeholder="Enter roll number">
                 </div>
-                
                 <div class="form-group">
-                    <label for="student-password" style="font-weight: 600; color: var(--text-main);">Password</label>
-                    <input type="password" id="student-password" name="password" class="form-control" required placeholder="Enter your password">
+                    <label for="student-password">Password</label>
+                    <input type="password" id="student-password" name="password" class="form-control" required placeholder="Enter password">
                 </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem; font-size: 1rem; font-weight: 700; background-color: var(--success);">Login as Student</button>
+                <button type="submit" class="btn btn-primary login-btn">Login as Student</button>
             </form>
-            <div style="background: var(--bg); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;">
-                <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">📝 Ask your teacher for login credentials</p>
+            <div class="login-note">
+                <p>Ask your teacher for student credentials.</p>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    #teacher-tab:hover, #student-tab:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    .login-shell {
+        min-height: calc(100vh - 180px);
+        display: grid;
+        place-items: center;
     }
-    
-    #teacher-tab.active {
+
+    .login-card {
+        width: 100%;
+        max-width: 460px;
+    }
+
+    .login-head {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .login-head h2 {
+        margin-bottom: 0.25rem;
+    }
+
+    .login-head p {
+        margin: 0;
+        color: var(--text-muted);
+    }
+
+    .role-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        padding: 0.3rem;
+        background: var(--surface-soft);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+        border: 0;
+        background: transparent;
+        padding: 0.6rem;
+        border-radius: 10px;
+        font: inherit;
+        font-weight: 700;
+        color: var(--text-muted);
+        cursor: pointer;
+    }
+
+    .tab-btn.is-active {
+        color: #fff;
         background: var(--primary);
-        color: white;
-        border-color: var(--primary);
     }
-    
-    #student-tab.active {
-        background: var(--success);
-        color: white;
-        border-color: var(--success);
+
+    .hidden {
+        display: none;
+    }
+
+    .login-btn {
+        width: 100%;
+        margin-top: 0.35rem;
+    }
+
+    .login-note {
+        margin-top: 0.9rem;
+        padding: 0.8rem;
+        border-radius: var(--radius-sm);
+        background: var(--surface-soft);
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+    }
+
+    .login-note p {
+        margin: 0.2rem 0;
+        font-size: 0.9rem;
+    }
+
+    .login-note code {
+        background: #fff;
+        border: 1px solid var(--border);
+        padding: 0.1rem 0.4rem;
+        border-radius: 7px;
+        color: var(--text-main);
     }
 </style>
 
@@ -89,26 +144,18 @@
         const studentForm = document.getElementById('student-form');
         const teacherTab = document.getElementById('teacher-tab');
         const studentTab = document.getElementById('student-tab');
-        
+
         if (tab === 'teacher') {
-            teacherForm.style.display = 'block';
-            studentForm.style.display = 'none';
-            teacherTab.style.background = 'var(--primary)';
-            teacherTab.style.color = 'white';
-            teacherTab.style.borderColor = 'var(--primary)';
-            studentTab.style.background = 'var(--bg)';
-            studentTab.style.color = 'var(--text-main)';
-            studentTab.style.borderColor = 'var(--border)';
+            teacherForm.classList.remove('hidden');
+            studentForm.classList.add('hidden');
+            teacherTab.classList.add('is-active');
+            studentTab.classList.remove('is-active');
             document.getElementById('teacher-username').focus();
         } else {
-            teacherForm.style.display = 'none';
-            studentForm.style.display = 'block';
-            teacherTab.style.background = 'var(--bg)';
-            teacherTab.style.color = 'var(--text-main)';
-            teacherTab.style.borderColor = 'var(--border)';
-            studentTab.style.background = 'var(--success)';
-            studentTab.style.color = 'white';
-            studentTab.style.borderColor = 'var(--success)';
+            teacherForm.classList.add('hidden');
+            studentForm.classList.remove('hidden');
+            teacherTab.classList.remove('is-active');
+            studentTab.classList.add('is-active');
             document.getElementById('student-rollno').focus();
         }
     }

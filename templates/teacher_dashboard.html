@@ -1,55 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h2 style="margin: 0;">👨‍🏫 Teacher Dashboard</h2>
+<div class="page-head">
+    <div>
+        <h2>Teacher Dashboard</h2>
+        <p>Manage student records, marks, and progress from one place.</p>
+    </div>
     <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
 </div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-    <div class="stats-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
-        <div style="font-size: 2rem;">👥</div>
-        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Total Students</p>
-        <p style="font-size: 2rem; font-weight: 700; margin: 0;">{{ student_count }}</p>
+<div class="grid cols-3" style="margin-bottom: 1rem;">
+    <div class="stat-card">
+        <p class="stat-label">Total Students</p>
+        <p class="stat-value">{{ student_count }}</p>
     </div>
-    
-    <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
-        <div style="font-size: 2rem;">📚</div>
-        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Classes</p>
-        <p style="font-size: 2rem; font-weight: 700; margin: 0;">{{ class_count }}</p>
+    <div class="stat-card">
+        <p class="stat-label">Classes</p>
+        <p class="stat-value">{{ class_count }}</p>
     </div>
-    
-    <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
-        <div style="font-size: 2rem;">⭐</div>
-        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Avg Score</p>
-        <p style="font-size: 2rem; font-weight: 700; margin: 0;">{{ avg_score }}</p>
+    <div class="stat-card">
+        <p class="stat-label">Average Score</p>
+        <p class="stat-value">{{ avg_score }}</p>
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+<div class="grid cols-2" style="margin-bottom: 1rem;">
     <div class="card">
-        <h3 style="margin-top: 0;">✨ Quick Actions</h3>
-        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <a href="{{ url_for('add_student') }}" class="btn btn-primary" style="width: 100%; text-align: center;">➕ Add Student</a>
-            <a href="{{ url_for('manage_marks') }}" class="btn btn-primary" style="width: 100%; text-align: center; background: var(--success);">📝 Enter Marks</a>
-            <a href="{{ url_for('search_student_page') }}" class="btn btn-primary" style="width: 100%; text-align: center; background: #4facfe;">🔍 Search Student</a>
+        <h3>Quick Actions</h3>
+        <div class="flex-row">
+            <a href="{{ url_for('add_student') }}" class="btn btn-primary">Add Student</a>
+            <a href="{{ url_for('manage_marks') }}" class="btn btn-outline">Enter Marks</a>
+            <a href="{{ url_for('search_student_page') }}" class="btn btn-outline">Search</a>
         </div>
     </div>
 
     <div class="card">
-        <h3 style="margin-top: 0;">📊 Analytics</h3>
-        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <a href="{{ url_for('class_topper') }}" class="btn btn-primary" style="width: 100%; text-align: center;">👑 Class Topper</a>
-            <a href="{{ url_for('fail_list') }}" class="btn btn-primary" style="width: 100%; text-align: center; background: #ef4444;">⚠️ Fail List</a>
-            <a href="{{ url_for('attendance_page') }}" class="btn btn-primary" style="width: 100%; text-align: center; background: #f97316;">📅 Attendance</a>
+        <h3>Reports</h3>
+        <div class="flex-row">
+            <a href="{{ url_for('class_topper') }}" class="btn btn-outline">Class Topper</a>
+            <a href="{{ url_for('fail_list') }}" class="btn btn-outline">Fail List</a>
+            <a href="{{ url_for('attendance_page') }}" class="btn btn-outline">Attendance</a>
         </div>
     </div>
 </div>
 
 <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
-        <h3 style="margin: 0;">📋 All Students</h3>
-        <input type="text" id="search-input" placeholder="Search by name or roll no..." style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 8px; width: 250px;">
+    <div class="page-head" style="margin-bottom: 0.7rem;">
+        <h3 style="margin: 0;">All Students</h3>
+        <input type="text" id="search-input" class="form-control" placeholder="Search by name or roll no" style="max-width: 260px;">
     </div>
 
     {% if students %}
@@ -69,20 +67,16 @@
                 {% for student in students %}
                 <tr>
                     <td>{{ student.roll_no }}</td>
-                    <td style="font-weight: 600;">{{ student.name }}</td>
+                    <td><strong>{{ student.name }}</strong></td>
                     <td>{{ student.class_name }}</td>
                     <td>{{ student.section or 'A' }}</td>
-                    <td>
-                        <span style="background: var(--bg); padding: 0.3rem 0.6rem; border-radius: 12px; font-weight: 600;">
-                            {{ student.average or 'N/A' }}
-                        </span>
-                    </td>
+                    <td><span class="pill">{{ student.average or 'N/A' }}</span></td>
                     <td>
                         <div class="flex-row">
                             <a href="{{ url_for('manage_grades', student_id=student.id) }}" class="btn btn-sm btn-outline">Grades</a>
                             <a href="{{ url_for('report_card', student_id=student.id) }}" class="btn btn-sm btn-primary">Report</a>
-                            <a href="{{ url_for('remarks_page', student_id=student.id) }}" class="btn btn-sm" style="background: #8b5cf6; color: white;">Remarks</a>
-                            <form action="{{ url_for('delete_student', student_id=student.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this student?');">
+                            <a href="{{ url_for('remarks_page', student_id=student.id) }}" class="btn btn-sm btn-outline">Remarks</a>
+                            <form action="{{ url_for('delete_student', student_id=student.id) }}" method="POST" onsubmit="return confirm('Delete this student?');">
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
                         </div>
@@ -95,25 +89,24 @@
     {% else %}
     <div class="empty-state">
         <h3>No students yet</h3>
-        <p>Get started by adding your first student</p>
-        <a href="{{ url_for('add_student') }}" class="btn btn-primary" style="margin-top: 1rem;">Add Student</a>
+        <p>Start by adding your first student record.</p>
+        <a href="{{ url_for('add_student') }}" class="btn btn-primary" style="margin-top: 0.7rem;">Add Student</a>
     </div>
     {% endif %}
 </div>
 
 <script>
-    document.getElementById('search-input').addEventListener('keyup', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const name = row.cells[1].textContent.toLowerCase();
-            const rollNo = row.cells[0].textContent.toLowerCase();
-            if (name.includes(searchTerm) || rollNo.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                const rollNo = row.cells[0].textContent.toLowerCase();
+                row.style.display = (name.includes(searchTerm) || rollNo.includes(searchTerm)) ? '' : 'none';
+            });
         });
-    });
+    }
 </script>
 {% endblock %}
