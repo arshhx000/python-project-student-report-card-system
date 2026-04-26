@@ -2,72 +2,84 @@
 
 {% block content %}
 <div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
-    <div class="card" style="max-width: 450px; width: 100%;">
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <h1 style="color: var(--primary); margin: 0 0 0.5rem 0; font-size: 2rem;">EduGrades</h1>
-            <p style="color: var(--text-muted); margin: 0;">Student Report Card System</p>
+    <div class="card" style="max-width: 500px; width: 100%;">
+        <div style="text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border);">
+            <h1 style="color: var(--primary); margin: 0 0 0.5rem 0; font-size: 2.5rem;">🎓 EduGrades</h1>
+            <p style="color: var(--text-muted); margin: 0; font-size: 1.1rem;">Student Report Card System</p>
         </div>
 
-        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid var(--border); padding-bottom: 1rem;">
-            <button type="button" class="tab-btn" onclick="switchTab('teacher')" id="teacher-tab" style="flex: 1; padding: 0.75rem; border: none; background: var(--primary); color: white; border-radius: 8px 0 0 0; cursor: pointer; font-weight: 600;">👨‍🏫 Teacher</button>
-            <button type="button" class="tab-btn" onclick="switchTab('student')" id="student-tab" style="flex: 1; padding: 0.75rem; border: none; background: var(--border); color: var(--text-main); border-radius: 0 8px 0 0; cursor: pointer; font-weight: 600;">👨‍🎓 Student</button>
+        <!-- Tab Buttons -->
+        <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem;">
+            <button type="button" class="tab-btn" onclick="switchTab('teacher')" id="teacher-tab" style="flex: 1; padding: 0.75rem 1rem; border: 2px solid var(--primary); background: var(--primary); color: white; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s;">👨‍🏫 Teacher</button>
+            <button type="button" class="tab-btn" onclick="switchTab('student')" id="student-tab" style="flex: 1; padding: 0.75rem 1rem; border: 2px solid var(--border); background: var(--bg); color: var(--text-main); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s;">👨‍🎓 Student</button>
         </div>
 
         <!-- Teacher Login Form -->
         <div id="teacher-form" style="display: block;">
-            <h2 style="margin-top: 0; color: var(--primary);">Teacher Login</h2>
+            <h3 style="margin: 0 0 1.5rem 0; color: var(--primary); text-align: center;">Teacher Login</h3>
             <form method="POST" action="{{ url_for('login') }}">
                 <input type="hidden" name="role" value="teacher">
                 
                 <div class="form-group">
-                    <label for="teacher-username">Username</label>
-                    <input type="text" id="teacher-username" name="username" class="form-control" required placeholder="Enter username">
+                    <label for="teacher-username" style="font-weight: 600; color: var(--text-main);">Username</label>
+                    <input type="text" id="teacher-username" name="username" class="form-control" required placeholder="Enter your username">
                 </div>
                 
                 <div class="form-group">
-                    <label for="teacher-password">Password</label>
-                    <input type="password" id="teacher-password" name="password" class="form-control" required placeholder="Enter password">
+                    <label for="teacher-password" style="font-weight: 600; color: var(--text-main);">Password</label>
+                    <input type="password" id="teacher-password" name="password" class="form-control" required placeholder="Enter your password">
                 </div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem;">Login</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem; font-size: 1rem; font-weight: 700;">Login as Teacher</button>
             </form>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-                <strong>Demo:</strong> username: <code>teacher</code>, password: <code>admin123</code>
-            </p>
+            <div style="background: var(--bg); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;">
+                <p style="margin: 0 0 0.5rem 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">📝 Demo Credentials:</p>
+                <p style="margin: 0; color: var(--text-main); font-family: 'Courier New', monospace;">Username: <strong>teacher</strong></p>
+                <p style="margin: 0.25rem 0 0 0; color: var(--text-main); font-family: 'Courier New', monospace;">Password: <strong>admin123</strong></p>
+            </div>
         </div>
 
         <!-- Student Login Form -->
         <div id="student-form" style="display: none;">
-            <h2 style="margin-top: 0; color: var(--success);">Student Login</h2>
+            <h3 style="margin: 0 0 1.5rem 0; color: var(--success); text-align: center;">Student Login</h3>
             <form method="POST" action="{{ url_for('login') }}">
                 <input type="hidden" name="role" value="student">
                 
                 <div class="form-group">
-                    <label for="student-rollno">Roll Number</label>
-                    <input type="text" id="student-rollno" name="username" class="form-control" required placeholder="e.g. 001, A001">
+                    <label for="student-rollno" style="font-weight: 600; color: var(--text-main);">Roll Number</label>
+                    <input type="text" id="student-rollno" name="username" class="form-control" required placeholder="e.g. 001 or A001">
                 </div>
                 
                 <div class="form-group">
-                    <label for="student-password">Password</label>
-                    <input type="password" id="student-password" name="password" class="form-control" required placeholder="Enter password">
+                    <label for="student-password" style="font-weight: 600; color: var(--text-main);">Password</label>
+                    <input type="password" id="student-password" name="password" class="form-control" required placeholder="Enter your password">
                 </div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem; background-color: var(--success);">Login</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem; font-size: 1rem; font-weight: 700; background-color: var(--success);">Login as Student</button>
             </form>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-                Ask your teacher for your roll number and password
-            </p>
+            <div style="background: var(--bg); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; text-align: center;">
+                <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">📝 Ask your teacher for login credentials</p>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-    code {
-        background: var(--bg);
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        font-family: 'Courier New', monospace;
-        color: var(--primary);
+    #teacher-tab:hover, #student-tab:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    #teacher-tab.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    
+    #student-tab.active {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
     }
 </style>
 
@@ -83,15 +95,21 @@
             studentForm.style.display = 'none';
             teacherTab.style.background = 'var(--primary)';
             teacherTab.style.color = 'white';
-            studentTab.style.background = 'var(--border)';
+            teacherTab.style.borderColor = 'var(--primary)';
+            studentTab.style.background = 'var(--bg)';
             studentTab.style.color = 'var(--text-main)';
+            studentTab.style.borderColor = 'var(--border)';
+            document.getElementById('teacher-username').focus();
         } else {
             teacherForm.style.display = 'none';
             studentForm.style.display = 'block';
-            teacherTab.style.background = 'var(--border)';
+            teacherTab.style.background = 'var(--bg)';
             teacherTab.style.color = 'var(--text-main)';
+            teacherTab.style.borderColor = 'var(--border)';
             studentTab.style.background = 'var(--success)';
             studentTab.style.color = 'white';
+            studentTab.style.borderColor = 'var(--success)';
+            document.getElementById('student-rollno').focus();
         }
     }
 </script>
